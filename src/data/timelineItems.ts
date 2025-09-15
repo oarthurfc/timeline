@@ -1,4 +1,6 @@
-const timelineItems = [
+import { TimeLineItem } from "@/types/timeline";
+
+const timelineItems: TimeLineItem[] = [
   {
     id: 1,
     start: "2021-01-14",
