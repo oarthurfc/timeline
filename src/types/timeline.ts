@@ -1,8 +1,8 @@
-export type TimeLineItem = {
+export type TimeLineEvent = {
   id: number;
   start: string;
   end: string;
   name: string;
 };
 
-export type Lane = TimeLineItem[];
+export type Lane = TimeLineEvent[];
