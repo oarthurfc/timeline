@@ -4,7 +4,7 @@ import { Lane, TimeLineItem } from '@/types/timeline';
  * Takes an array of items and assigns them to lanes based on start/end dates.
  * @returns an array of arrays containing items.
  */
-function assignLanes(items: TimeLineItem[]): Lane[] {
+export default function assignLanes(items: TimeLineItem[]): Lane[] {
   const sortedItems = items.sort(
     (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
   );
