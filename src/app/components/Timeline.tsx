@@ -11,7 +11,7 @@ import { TimeLineEvent } from '@/types/timeline';
 
 type TimelineProps = {
   lanes: TimeLineEvent[][];
-  items: { start: string; end: string }[];
+  items: TimeLineEvent[];
 };
 
 export const Timeline = ({ lanes: initialLanes, items }: TimelineProps) => {
@@ -50,7 +50,6 @@ export const Timeline = ({ lanes: initialLanes, items }: TimelineProps) => {
       }
       newLanes[targetLaneIndex].push(draggedEvent);
 
-      // Remove lanes vazias
       return newLanes.filter((lane) => lane.length > 0);
     });
   }, []);
