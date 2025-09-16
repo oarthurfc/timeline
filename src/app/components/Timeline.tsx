@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TimelineHeader } from './TimelineHeader';
 import { TimelineLane } from './TimelineLane';
 import { ZoomControls } from './ZoomControls';
@@ -12,7 +14,8 @@ type TimelineProps = {
   items: { start: string; end: string }[];
 };
 
-export const Timeline = ({ lanes, items }: TimelineProps) => {
+export const Timeline = ({ lanes: initialLanes, items }: TimelineProps) => {
+  const [lanes, setLanes] = useState(initialLanes);
   const [zoomLevel, setZoomLevel] = useState(1);
   const minZoom = 0.5;
   const maxZoom = 3;
@@ -30,37 +33,67 @@ export const Timeline = ({ lanes, items }: TimelineProps) => {
     setZoomLevel((prev) => Math.max(prev - 0.2, minZoom));
   };
 
-  return (
-    <div className="w-full space-y-8">
-      <div className="flex justify-center">
-        <ZoomControls
-          zoomLevel={zoomLevel}
-          onZoomIn={handleZoomIn}
-          onZoomOut={handleZoomOut}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-        />
-      </div>
+  const moveEvent = useCallback((draggedEvent: TimeLineEvent, targetLaneIndex: number) => {
+    setLanes((prevLanes) => {
+      const newLanes = [...prevLanes];
 
-      <section className="relative w-full">
-        {/* Header fixo */}
-        <div className="sticky top-0 z-10 border-b border-gray-200 bg-white">
-          <TimelineHeader
-            minDate={minDate}
-            dayWidth={dayWidth}
-            totalDays={totalDays}
+      for (let i = 0; i < newLanes.length; i++) {
+        const eventIndex = newLanes[i].findIndex((event) => event.id === draggedEvent.id);
+        if (eventIndex !== -1) {
+          newLanes[i].splice(eventIndex, 1);
+          break;
+        }
+      }
+
+      if (!newLanes[targetLaneIndex]) {
+        newLanes[targetLaneIndex] = [];
+      }
+      newLanes[targetLaneIndex].push(draggedEvent);
+
+      // Remove lanes vazias
+      return newLanes.filter((lane) => lane.length > 0);
+    });
+  }, []);
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div className="w-full space-y-8">
+        <div className="flex justify-center">
+          <ZoomControls
             zoomLevel={zoomLevel}
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
           />
         </div>
 
-        <div className="overflow-x-auto">
-          <div className="relative" style={{ width: `${totalWidth}px` }}>
-            {lanes.map((lane, idx) => (
-              <TimelineLane key={idx} events={lane} minDate={minDate} dayWidth={dayWidth} />
-            ))}
+        <section className="relative w-full">
+          <div className="sticky top-0 z-10 border-b border-gray-200 bg-white">
+            <TimelineHeader
+              minDate={minDate}
+              dayWidth={dayWidth}
+              totalDays={totalDays}
+              zoomLevel={zoomLevel}
+            />
           </div>
-        </div>
-      </section>
-    </div>
+
+          <div className="overflow-x-auto">
+            <div className="relative" style={{ width: `${totalWidth}px` }}>
+              {lanes.map((lane, idx) => (
+                <TimelineLane
+                  key={idx}
+                  events={lane}
+                  minDate={minDate}
+                  dayWidth={dayWidth}
+                  laneIndex={idx}
+                  moveEvent={moveEvent}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    </DndProvider>
   );
 };
