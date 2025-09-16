@@ -10,7 +10,7 @@ type TimelineLaneProps = {
 
 export const TimelineLane = ({ events, minDate, dayWidth }: TimelineLaneProps) => {
   return (
-    <div className="relative flex h-30 items-center border-y border-gray-200">
+    <div className="relative flex h-30 w-full min-w-full items-center border-b border-gray-200">
       {events.map((event) => {
         const style = getEventStyle(event, minDate, dayWidth);
         return (
