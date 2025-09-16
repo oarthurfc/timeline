@@ -1,4 +1,4 @@
-# Horiz## Project Overview
+# Horizontal Project Overview
 
 This interactive timeline showcases:
 
