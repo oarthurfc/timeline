@@ -15,3 +15,12 @@ export function getEventStyle(
     (new Date(event.end).getTime() - new Date(event.start).getTime()) / (1000 * 60 * 60 * 24) + 1;
   return { left: `${startOffset * dayWidth}px`, width: `${duration * dayWidth}px` };
 }
+
+export function formatEventDateRange(start: string, end: string) {
+  const format = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+  return `${format(start)} - ${format(end)}`;
+}
