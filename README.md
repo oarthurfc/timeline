@@ -183,7 +183,7 @@ Events are passed into `assignLanes()`, which groups them into lanes and returns
 
 - **Hover Effects**: Visual feedback on interactive elements
 - **Cursor States**: Changes to grab/grabbing during drag operations
-- **Color Coding**: Green accent border for better event identification
+- **Color Coding**: Color accent border for better event identification
 - **Responsive Design**: Horizontal scrolling adapts to viewport size
 
 ---
